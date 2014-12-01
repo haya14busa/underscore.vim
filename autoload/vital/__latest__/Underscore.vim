@@ -260,8 +260,8 @@ function! s:_.tap(obj, interceptor) abort
     return a:obj
 endfunction
 
-function! s:_.zip(xs) abort
-    return s:_(s:List.zip(a:xs)).flatten(1)
+function! s:_.zip(...) abort
+    return call(s:List.zip, a:000)
 endfunction
 
 " Util:
