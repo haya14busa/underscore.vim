@@ -5,8 +5,9 @@ function! s:suite.before() abort
     let s:V = vital#of('vital')
     let s:Un = s:V.import('Underscore')
     let s:_ = s:Un.import()
-    function! s:_(...) abort
-        return call(s:Un.underscore, a:000)
-    endfunction
+endfunction
+
+function! s:_(...) abort
+    return call(s:Un.underscore, a:000)
 endfunction
 
