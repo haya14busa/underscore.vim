@@ -1,0 +1,61 @@
+Describe chaining
+
+    Before all
+        let s:V = vital#of('vital')
+        let s:Un = s:V.import('Underscore')
+        let g:_ = s:Un.import()
+        call themis#func_alias({'_': g:_})
+    End
+
+    function! g:_(...) abort
+        return call(s:Un.underscore, a:000)
+    endfunction
+
+    Context map/flatten/reduce
+        It counted all the letters in the song
+            function! s:word_cnt(memo, val) abort
+                let a:memo[a:val] = get(a:memo, a:val, 0) + 1
+                return a:memo
+            endfunction
+            let lyrics = [
+            \   "I'm a lumberjack and I'm okay",
+            \   "I sleep all night and I work all day",
+            \   "He's a lumberjack and he's okay",
+            \   "He sleeps all night and he works all day"
+            \ ]
+            let counts = g:_.chain(lyrics)
+                \.map('split(v:val, "\\zs")')
+                \.flatten()
+                \.reduce({}, function('s:word_cnt'))
+                \.value()
+            Assert Equals(counts.a, 16)
+            Assert Equals(counts.e, 10)
+        End
+    End
+
+    Context select/reject/sortBy in functional style
+        It filtered and reversed the numbers
+            let numbers = g:_.chain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+                \.select('v:val % 2 == 0')
+                \.reject('v:val % 4 == 0')
+                \.sort_by('- v:val')
+                \.value()
+            Assert Equals(numbers, [10, 6, 2])
+        End
+    End
+
+    Context reverse/concat/unshift/pop/map
+        It can chain together array functions.
+            Skip not implemented yet
+            let numbers = g:_.chain([1, 2, 3, 4, 5])
+                \.reverse()
+                \.concat([5, 5, 5])
+                \.unshift(17)
+                \.pop()
+                \.map('v:val * 2')
+                \.value()
+            Assert Equals(numbers, [34, 10, 8, 6, 4, 2, 10, 10])
+        End
+    End
+
+End
