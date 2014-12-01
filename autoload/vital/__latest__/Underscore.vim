@@ -213,6 +213,11 @@ function! s:_.last(xs, ...) abort
     return s:_.is_list(r) ? reverse(r) : r
 endfunction
 
+function! s:_.compact(xs) abort
+    return s:_(a:xs)
+        \.filter('(!s:_.is_number(v:val) || v:val) && (!s:_.is_string(v:val) || v:val != "")')
+endfunction
+
 function! s:_.tail(xs, ...) abort
     return a:xs[get(a:, 1, 1):]
 endfunction
