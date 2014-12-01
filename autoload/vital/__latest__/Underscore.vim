@@ -248,10 +248,12 @@ function! s:_.uniq_by(xs, f) abort
         return s:List.uniq_by(a:xs, a:f)
     endif
 endfunction
+let s:_.unique_by = s:_.uniq_by
 
 function! s:_.uniq(xs) abort
     return s:_.uniq_by(a:xs, s:_.identity)
 endfunction
+let s:_.unique = s:_.uniq
 
 function! s:_.tap(obj, interceptor) abort
     call a:interceptor(a:obj)
