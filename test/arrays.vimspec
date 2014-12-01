@@ -5,18 +5,17 @@ Describe arrays
         let s:Un = s:V.import('Underscore')
         let g:_ = s:Un.import()
         call themis#func_alias({'_': g:_})
+        function! g:Un(...) abort
+            return call(s:Un.underscore, a:000)
+        endfunction
     End
-
-    function! g:_(...) abort
-        return call(s:Un.underscore, a:000)
-    endfunction
 
     Context first
         It can pull out the first element of an array
             Assert Equals(g:_.first([1,2,3]), 1)
         End
         It can perform OO-style "first()"
-            Assert Equals(g:_([1,2,3]).first(), 1)
+            Assert Equals(g:Un([1,2,3]).first(), 1)
         End
         It can pass an index to first
             Assert Equals(g:_.first([1,2,3], 0), [])
@@ -57,7 +56,7 @@ Describe arrays
             Assert Equals(g:_.rest(numbers, 2), [3,4])
         End
         It works on arguments object
-            Assert Equals(g:_(numbers).rest(), [2,3,4])
+            Assert Equals(g:Un(numbers).rest(), [2,3,4])
         End
         It works well with _.map
             let r = g:_.map([[1,2,3],[1,2,3]], g:_.rest)
@@ -107,7 +106,7 @@ Describe arrays
             Assert Equals(g:_.last([1,2,3], 5), [1,2,3])
         End
         It works on an arguments object
-            Assert Equals(g:_([1,2,3,4]).last(), 4)
+            Assert Equals(g:Un([1,2,3,4]).last(), 4)
         End
         It works well with _.map
             let r = g:_.map([[1, 2, 3], [1, 2, 3]], g:_.last)
@@ -134,12 +133,12 @@ Describe arrays
             Assert Equals(g:_.flatten(list), [1,2,3,4])
         End
         It works on an arguments object
-            Assert Equals(g:_(list).flatten(), [1,2,3,4])
+            Assert Equals(g:Un(list).flatten(), [1,2,3,4])
         End
         It Flatten can handle massive collections
-            let r = g:_([range(10), range(10), 5, 1, 3]).flatten()
+            let r = g:Un([range(10), range(10), 5, 1, 3]).flatten()
             Assert Equals(len(r), 23)
-            let r = g:_([range(10000), 5, 1, 3]).flatten()
+            let r = g:Un([range(10000), 5, 1, 3]).flatten()
             Assert Equals(len(r), 10003)
         End
     End

@@ -7,10 +7,6 @@ Describe chaining
         call themis#func_alias({'_': g:_})
     End
 
-    function! g:_(...) abort
-        return call(s:Un.underscore, a:000)
-    endfunction
-
     Context map/flatten/reduce
         It counted all the letters in the song
             function! s:word_cnt(memo, val) abort
