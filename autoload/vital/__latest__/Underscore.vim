@@ -62,7 +62,7 @@ endfunction
 function! s:_.each(xs, f) abort
     let F = s:_.is_string(a:f) ? function(a:f) : a:f
     for x in a:xs
-        call F(x)
+        call F(x, index(a:xs, x))
     endfor
     return a:xs
 endfunction
