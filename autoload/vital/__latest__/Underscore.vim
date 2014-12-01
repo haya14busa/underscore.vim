@@ -191,8 +191,13 @@ endfunction
 
 " xs, n
 function! s:_.take(xs, ...) abort
-    let r = a:xs[0 : get(a:, 1, 1) - 1]
-    return len(r) is 1 ? r[0] : r
+    let i = get(a:, 1, 1)
+    if (i <= 0)
+        return []
+    else
+        let r = a:xs[0 : max([0, i - 1])]
+        return len(r) is 1 ? r[0] : r
+    endif
 endfunction
 let s:_.first = s:_.take
 let s:_.head = s:_.take
