@@ -209,7 +209,8 @@ function! s:_.initial(xs, ...) abort
 endfunction
 
 function! s:_.last(xs, ...) abort
-    return call(s:_.take, [s:_(a:xs).reverse()] + a:000, self)
+    let r = call(s:_.take, [s:_(a:xs).reverse()] + a:000, self)
+    return s:_.is_list(r) ? reverse(r) : r
 endfunction
 
 function! s:_.tail(xs, ...) abort
