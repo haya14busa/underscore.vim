@@ -264,6 +264,29 @@ function! s:_.zip(...) abort
     return call(s:List.zip, a:000)
 endfunction
 
+" @overwrite
+function! s:_.pop(...) abort
+    return call(s:List.pop, a:000)
+endfunction
+
+function! s:_.push(...) abort
+    return call(s:List.push, a:000)
+endfunction
+
+" @overwrite
+function! s:_.shift(...) abort
+    return call(s:List.shift, a:000)
+endfunction
+
+function! s:_.unshift(...) abort
+    return call(s:List.unshift, a:000)
+endfunction
+
+function! s:_.concat(xs, ys) abort
+    return a:xs + a:ys
+endfunction
+
+
 " Util:
 
 let s:_.TRUE = !0
@@ -315,6 +338,14 @@ unlet s:method
 
 function! s:_obj.value() abort
     return self._val
+endfunction
+
+function! s:_obj.pop() abort
+    return self.initial()
+endfunction
+
+function! s:_obj.shift() abort
+    return self.tail()
 endfunction
 
 function! s:import() abort
