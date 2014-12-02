@@ -1,0 +1,407 @@
+Describe collections
+
+    Before all
+        let s:V = vital#of('vital')
+        let s:Un = s:V.import('Underscore')
+        let g:_ = s:Un.import()
+        call themis#func_alias({'_': g:_})
+        function! g:Un(...) abort
+            return call(s:Un.underscore, a:000)
+        endfunction
+    End
+
+    Context each
+        It each iterators provide value and iteration count
+            function! s:test(x, i)
+                execute 'Assert' 'Equals(' . a:x . ', ' . (a:i + 1) . ')'
+            endfunction
+            call g:_.each([1,2,3], function('s:test'))
+        End
+        It returns passing collection
+            function! s:test(x, i)
+                return a:i
+            endfunction
+            let r = g:_.each([1,2,3], function('s:test'))
+            Assert Equals(r, [1,2,3])
+        End
+    End
+
+    Context for_each
+        It alias for each
+            Assert Equals(g:_.each, g:_.for_each)
+        End
+    End
+
+    Context map
+        It doubled numbers
+            function! s:test(x)
+                return a:x * 2
+            endfunction
+            let r = g:_.map([1,2,3], function('s:test'))
+            Assert Equals(r, [2,4,6])
+            let r2 = g:_.map([1,2,3], 'v:val * 2')
+            Assert Equals(r2, [2,4,6])
+        End
+        It OO-style doubled numbers
+            function! s:test(x)
+                return a:x * 2
+            endfunction
+            let r = g:Un([1,2,3]).map(function('s:test'))
+            Assert Equals(r, [2,4,6])
+            let r2 = g:Un([1,2,3]).map('v:val * 2')
+            Assert Equals(r2, [2,4,6])
+        End
+    End
+
+    Context collect
+        It alias for map
+            Assert Equals(g:_.map, g:_.collect)
+        End
+    End
+
+    Context reduce
+        It can sum up an array
+            function! s:test(sum, num)
+                return a:sum + a:num
+            endfunction
+            let r = g:_.reduce([1,2,3], 0, function('s:test'))
+            Assert Equals(r, 6)
+            let r2 = g:_.reduce([1,2,3], 0, 'v:memo + v:val')
+            Assert Equals(r2, 6)
+        End
+        It OO-style reduce
+            let r = g:Un([1,2,3]).reduce(0, 'v:memo + v:val')
+            Assert Equals(r, 6)
+        End
+        It can reduce via multiplication
+            let r = g:_.reduce([1,2,3,4], 1, 'v:memo * v:val')
+            Assert Equals(r, 24)
+        End
+        It handles a empty list (with initial value) properly
+            let r = g:_.reduce([], 138, g:_.identity)
+            Assert Equals(r, 138)
+        End
+    End
+
+    Context inject
+        It alias for reduce
+            Assert Equals(g:_.reduce, g:_.inject)
+        End
+    End
+
+    Context foldl
+        It alias for reduce
+            Assert Equals(g:_.reduce, g:_.foldl)
+        End
+    End
+
+    Context reduceRight
+        It can perform right folds
+            function! s:test(memo, str)
+                return a:memo + a:str
+            endfunction
+            let r = g:_.reduceRight(['foo','bar','baz'], '', function('s:test'))
+            Assert Equals(r, 'bazbarfoo')
+            let r2 = g:_.reduceRight(['foo','bar','baz'], '', 'v:memo + v:val')
+            Assert Equals(r2, 'bazbarfoo')
+        End
+        It handles a empty list (with initial value) properly
+            let r = g:_.reduceRight([], 138, g:_.identity)
+            Assert Equals(r, 138)
+        End
+    End
+
+    Context foldr
+        It alias for reduceRight
+            Assert Equals(g:_.reduceRight, g:_.foldr)
+        End
+    End
+
+    Context find
+        let array = [1,2,3,4]
+        It should return first found `value`
+            function! s:test(val)
+                return a:val > 2
+            endfunction
+            let r = g:_.find(array, -1, function('s:test'))
+            Assert Equals(r, 3)
+            let r2 = g:_.find(array, -1, 'v:val > 2')
+            Assert Equals(r2, 3)
+        End
+        It should return `default` if `value` is not found
+            function! s:test(val)
+                return 0
+            endfunction
+            let r = g:_.find(array, -1, function('s:test'))
+            Assert Equals(r, -1)
+        End
+        It found the first "2" and broke the loop
+            let s:cnt = 0
+            function! s:test(val)
+                let s:cnt += 1
+                return a:val * 2 == 4
+            endfunction
+            let r = g:_.find(array, 2, function('s:test'))
+            Assert Equals(r, 2)
+            execute 'Assert' printf('Equals(%d, 2)', s:cnt)
+            unlet s:cnt
+        End
+    End
+
+    Context detect
+        It alias for find
+            Assert Equals(g:_.find, g:_.detect)
+        End
+    End
+
+    Context filter
+        let array = [1,2,3,4,5,6]
+        It can filter even value
+            function! s:test(val)
+                return a:val % 2 == 0
+            endfunction
+            let r = g:_.filter(array, function('s:test'))
+            Assert Equals(r, [2,4,6])
+            let r2 = g:_.filter(array, 'v:val % 2 == 0')
+            Assert Equals(r2, [2,4,6])
+        End
+        It OO-filter
+            let r = g:Un(array).filter(function('s:test'))
+            Assert Equals(r, [2,4,6])
+        End
+    End
+
+    Context select
+        It alias for filter
+            Assert Equals(g:_.filter, g:_.select)
+        End
+    End
+
+    Context reject
+        let array = [1,2,3,4,5,6]
+        It rejected each even number
+            function! s:test(val)
+                return a:val % 2 == 0
+            endfunction
+            let r = g:_.reject(array, function('s:test'))
+            Assert Equals(r, [1,3,5])
+            let r2 = g:_.reject(array, 'v:val % 2 == 0')
+            Assert Equals(r2, [1,3,5])
+        End
+        It rejected each even number
+            let r = g:_.reject(array, 'v:val % 2 != 0')
+            Assert Equals(r, [2,4,6])
+        End
+        It OO-reject
+            let r = g:Un(array).reject(function('s:test'))
+            Assert Equals(r, [1,3,5])
+        End
+    End
+
+    Context every
+        It the empty set
+            Assert g:_.every([], g:_.identity)
+        End
+        It every true values
+            Assert g:_.every([g:_.TRUE,g:_.TRUE,g:_.TRUE], g:_.identity)
+        End
+        It one false value
+            Assert !g:_.every([g:_.TRUE,g:_.TRUE,g:_.FALSE], g:_.identity)
+        End
+        It even numbers
+            function! s:test(val)
+                return a:val % 2 == 0
+            endfunction
+            let r = g:_.every([0, 10, 28], function('s:test'))
+            Assert r
+            Assert g:_.every([0, 10, 28], 'v:val % 2 == 0')
+        End
+        It an odd number
+            Assert !g:_.every([0, 11, 28], 'v:val % 2 == 0')
+        End
+        It OO-every
+            Assert g:Un([0,1,3]).every(g:_.is_number)
+            Assert !g:Un([0,'',3]).every(g:_.is_number)
+        End
+    End
+
+    Context all
+        It alias for every
+            Assert Equals(g:_.every, g:_.all)
+        End
+    End
+
+    Context some
+        It the empty set
+            Assert !g:_.some([], g:_.identity)
+        End
+        It all false values
+            Assert !g:_.some([g:_.FALSE,g:_.FALSE,g:_.FALSE], g:_.identity)
+        End
+        It one true value
+            Assert g:_.some([g:_.FALSE,g:_.TRUE,g:_.FALSE], g:_.identity)
+        End
+        It a string
+            Assert g:_.some([0, 'yes', 0])
+        End
+        It falsy values
+            Assert !g:_.some([0, '', 0])
+        End
+        It all odd numbers
+            function! s:test(val)
+                return a:val % 2 == 0
+            endfunction
+            let r = g:_.some([1,11,29], function('s:test'))
+            Assert !r
+            Assert !g:_.some([1,11,29], 'v:val % 2 == 0')
+        End
+        It an even number
+            Assert g:_.some([1, 10, 29], 'v:val % 2 == 0')
+        End
+        It OO-some
+            Assert g:Un([0,1,3]).some(g:_.is_number)
+            Assert g:Un([0,'',3]).some(g:_.is_number)
+            Assert !g:Un(['',[]]).some(g:_.is_number)
+        End
+    End
+
+    Context any
+        It alias for some
+            Assert Equals(g:_.some, g:_.any)
+        End
+    End
+
+    Context contains
+        It two is in the array
+            Assert g:_.contains([1,2,3], 2)
+        End
+        It two is not in the array
+            Assert !g:_.contains([1,3,9], 2)
+        End
+    End
+
+    Context include
+        It alias for contains
+            Assert Equals(g:_.contains, g:_.include)
+        End
+    End
+
+    Context sort_by
+        It stooges sorted by age
+            function! s:test(val)
+                return a:val.age
+            endfunction
+            let people = [{'name' : 'curly', 'age' : 50}, {'name' : 'moe', 'age' : 30}]
+            let r = g:_.chain(people)
+                \.sort_by('v:val.age')
+                \.map('v:val.name')
+                \.value()
+            Assert Equals(r, ['moe', 'curly'])
+            let r2 = g:_.chain(people)
+                \.sort_by(function('s:test'))
+                \.map('v:val.name')
+                \.value()
+            Assert Equals(r2, ['moe', 'curly'])
+        End
+        It sorted by length
+            let r = g:_.sort_by(['one', 'two', 'three', 'four', 'five'],
+            \   function('len'))
+            Assert Equals(r, ['one', 'two', 'four', 'five', 'three'])
+        End
+        It sort_by should be stable
+            let s:Pair = {'x': 0, 'y': 0}
+            function! s:Pair.new(x, y)
+                return {'x': a:x, 'y': a:y}
+            endfunction
+            let collection = [
+            \   s:Pair.new(1, 1), s:Pair.new(1, 2),
+            \   s:Pair.new(1, 3), s:Pair.new(1, 4),
+            \   s:Pair.new(1, 5), s:Pair.new(1, 6),
+            \   s:Pair.new(2, 1), s:Pair.new(2, 2),
+            \   s:Pair.new(2, 3), s:Pair.new(2, 4),
+            \   s:Pair.new(2, 5), s:Pair.new(2, 6),
+            \   s:Pair.new(3, 3), s:Pair.new(3, 4),
+            \   s:Pair.new(3, 1), s:Pair.new(3, 2),
+            \   s:Pair.new(3, 5), s:Pair.new(3, 6),
+            \ ]
+            let actual = g:_.sort_by(collection, 'v:val.x')
+            Assert Equals(actual, collection)
+        End
+    End
+
+    Context sort
+        It stooges sorted by age
+            function! s:test(a, b)
+                return a:a.age  - a:b.age
+            endfunction
+            let people = [{'name' : 'curly', 'age' : 50}, {'name' : 'moe', 'age' : 30}]
+            let r = g:_.chain(people)
+                \.sort('a:a.age - a:b.age')
+                \.map('v:val.name')
+                \.value()
+            Assert Equals(r, ['moe', 'curly'])
+            let r2 = g:_.chain(people)
+                \.sort(function('s:test'))
+                \.map('v:val.name')
+                \.value()
+            Assert Equals(r2, ['moe', 'curly'])
+        End
+    End
+
+    Context reverse
+        It reverse collection
+            Assert Equals(g:_.reverse([1,2,3]), [3,2,1])
+        End
+        It reverse collection without break original value
+            let original = [1,2,3]
+            Assert Equals(g:_.reverse(original), [3,2,1])
+            Assert Equals(original, [1,2,3])
+        End
+    End
+
+    Context group_by
+        It created a group for each value
+            let parity = g:_.group_by([1,2,3,4,5,6], 'v:val % 2')
+            Assert has_key(parity, 0)
+            Assert has_key(parity, 1)
+            Assert !has_key(parity, 2)
+        End
+        It put each even number in the right group
+            function! s:test(val)
+                return v:val % 2
+            endfunction
+            let parity = g:_.group_by([1,2,3,4,5,6], function('s:test'))
+            Assert has_key(parity, 0)
+            Assert has_key(parity, 1)
+            Assert Equals(parity['0'], [2,4,6])
+            Assert Equals(parity['1'], [1,3,5])
+        End
+        It group by length
+            let list = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
+            let grouped = g:_.group_by(list, function('len'))
+            Assert Equals(grouped['3'], ['one', 'two', 'six', 'ten'])
+            Assert Equals(grouped['4'], ['four', 'five', 'nine'])
+            Assert Equals(grouped['5'], ['three', 'seven', 'eight'])
+        End
+    End
+
+    Context size
+        It can compute the size of an object
+            Assert Equals(g:_.size({'one': 1, 'two': 2, 'three': 3}), 3)
+        End
+        It can compute the size of an array
+            Assert Equals(g:_.size([1,2,3]), 3)
+        End
+        It can compute the size of a string literal
+            Assert Equals(g:_.size('vim'), 3)
+        End
+    End
+
+    Context Not implemented yet
+        It invoke/pluck/where/findWhere/max/min/index_by/count_by/shuffle/sample/toArray/partition
+            Skip 'should I implement it?'
+        End
+    End
+
+End
+
