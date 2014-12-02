@@ -1,0 +1,88 @@
+Describe objects
+
+    Before all
+        let s:V = vital#of('vital')
+        let s:Un = s:V.import('Underscore')
+        let g:_ = s:Un.import()
+        call themis#func_alias({'_': g:_})
+        function! g:Un(...) abort
+            return call(s:Un.underscore, a:000)
+        endfunction
+    End
+
+    Context tap
+        function! s:intercepter(obj)
+            let s:intercepted = a:obj
+        endfunction
+        It passes tapped object to interceptor
+            let s:intercepted = 0
+            let returned = g:_.tap(1, function('s:intercepter'))
+            let intercepted = s:intercepted
+            Assert Equals(intercepted, 1)
+        End
+        It returns tapped object
+            let s:intercepted = 0
+            let returned = g:_.tap(1, function('s:intercepter'))
+            let intercepted = s:intercepted
+            Assert Equals(returned, 1)
+        End
+        It can use tapped objects in a chain
+            if exists('s:intercepted')
+                unlet s:intercepted
+            endif
+            let s:intercepted = []
+            let returned = g:_.chain([1,2,3])
+                \.map('v:val * 2')
+                \.foldl([0], '[v:memo[0] + v:val]')
+                \.tap(function('s:intercepter'))
+                \.map('v:val / 2')
+                \.foldl(0, 'v:memo + v:val')
+                \.value()
+            let intercepted = s:intercepted
+            Assert Equals(intercepted, [12])
+            Assert Equals(returned, 6)
+        End
+    End
+
+    Context _.is
+        It is_number
+            Assert !g:_.is_number('string')
+            Assert g:_.is_number(3 * 4 - 7 / 10)
+            Assert !g:_.is_number('1')
+        End
+        It is_float
+            Assert !g:_.is_float('string')
+            Assert !g:_.is_float(1)
+            Assert g:_.is_float(1.0)
+        End
+        It is_string
+            Assert !g:_.is_string(0)
+            Assert g:_.is_string('string')
+            Assert g:_.is_string('')
+        End
+        It is_funcref
+            Assert !g:_.is_funcref('string')
+            Assert !g:_.is_funcref('len')
+            Assert g:_.is_funcref(function('len'))
+            Assert g:_.is_funcref(g:_.identity)
+        End
+        It is_list
+            Assert !g:_.is_list('str')
+            Assert !g:_.is_list({})
+            Assert g:_.is_list([1,2,3])
+        End
+        It is_dict
+            Assert !g:_.is_dict('str')
+            Assert !g:_.is_dict([1,2,3])
+            Assert g:_.is_dict({})
+        End
+    End
+
+    Context Not implemented yet
+        It keys/values/pairs/invert/functions/extend/pick/omit/clone/has/matches/property/isEqual/isEmpty/isDate/
+            Skip 'should I implement it?'
+        End
+    End
+
+End
+
