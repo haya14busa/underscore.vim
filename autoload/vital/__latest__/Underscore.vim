@@ -131,8 +131,8 @@ let s:_.all = s:_.every
 
 " xs, f
 function! s:_.some(xs, ...) abort
-    let F = get(a:, 1, s:_.identity)
-    return !empty(s:_.chain(a:xs).filter(F).length())
+    let F = get(a:, 1, function('s:_truthy'))
+    return !empty(s:_(a:xs).filter(F))
 endfunction
 let s:_.any = s:_.some
 
@@ -214,8 +214,7 @@ function! s:_.last(xs, ...) abort
 endfunction
 
 function! s:_.compact(xs) abort
-    return s:_(a:xs)
-        \.filter('(!s:_.is_number(v:val) || v:val) && (!s:_.is_string(v:val) || v:val != "")')
+    return s:_(a:xs).filter(function('s:_truthy'))
 endfunction
 
 function! s:_.tail(xs, ...) abort
@@ -357,6 +356,11 @@ endfunction
 
 function! s:_make_pair(x) abort
     return [a:x, call(s:_F, [a:x], {})]
+endfunction
+
+function! s:_truthy(x) abort
+    return (!s:_.is_number(v:val) || v:val) &&
+    \      (!s:_.is_string(v:val) || v:val != "")
 endfunction
 
 " Restore 'cpoptions' {{{
