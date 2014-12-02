@@ -254,11 +254,6 @@ function! s:_.uniq(xs) abort
 endfunction
 let s:_.unique = s:_.uniq
 
-function! s:_.tap(obj, interceptor) abort
-    call a:interceptor(a:obj)
-    return a:obj
-endfunction
-
 function! s:_.zip(...) abort
     return call(s:List.zip, a:000)
 endfunction
@@ -285,20 +280,18 @@ function! s:_.concat(xs, ys) abort
     return a:xs + a:ys
 endfunction
 
-
-" Util:
-
-let s:_.TRUE = !0
-let s:_.FALSE = 0
-
-function! s:_.identity(x) abort
-    return a:x
-endfunction
-
 function! s:_.length(xs) abort
     return len(a:xs)
 endfunction
 let s:_.size = s:_.length
+
+
+" Object:
+
+function! s:_.tap(obj, interceptor) abort
+    call a:interceptor(a:obj)
+    return a:obj
+endfunction
 
 function! s:_.is_number(...) abort
     return call(s:Prelude.is_number, a:000)
@@ -317,6 +310,16 @@ function! s:_.is_list(...) abort
 endfunction
 function! s:_.is_dict(...) abort
     return call(s:Prelude.is_dict, a:000)
+endfunction
+
+
+" Util:
+
+let s:_.TRUE = !0
+let s:_.FALSE = 0
+
+function! s:_.identity(x) abort
+    return a:x
 endfunction
 
 " Chaining Obj:
