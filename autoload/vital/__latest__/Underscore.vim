@@ -142,9 +142,9 @@ endfunction
 let s:_.include = s:_.contains
 
 function! s:_.sort(xs, ...) abort
-    if a:0 is 0
+    if empty(a:0)
         return sort(a:xs)
-    elseif a:1 is 0 || a:1 == '' || a:1 == 1 || a:1 =~# '[in]'
+    elseif s:_.is_funcref(a:1) || a:1 is 0 || a:1 == '' || a:1 == 1 || a:1 =~# '[in]'
         return sort(a:xs, a:1)
     else
         return s:List.sort(a:xs, a:1)
