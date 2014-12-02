@@ -190,41 +190,8 @@ Describe arrays
         End
     End
 
-    Context Skip
-        It without
-            Skip 'should I implement it?'
-        End
-        It sortedIndex
-            Skip 'should I implement it?'
-        End
-        It intersection
-            Skip 'should I implement it?'
-        End
-        It union
-            Skip 'should I implement it?'
-        End
-        It difference
-            Skip 'should I implement it?'
-        End
-        It zip_fill
-            Skip 'should I implement it?'
-        End
-        It unzip
-            Skip 'should I implement it?'
-        End
-        It object
-            Skip 'should I implement it?'
-        End
-        It indexOf
-            Skip 'should I implement it?'
-        End
-        It lastIndexOf
-            Skip 'should I implement it?'
-        End
-        It findIndex
-            Skip 'should I implement it?'
-        End
-        It range
+    Context Not implemented yet
+        It without/sortedIndex/intersection/union/difference/zip_fill/unzip/object/indexOf/lastIndexOf/findIndex/range
             Skip 'should I implement it?'
         End
     End
