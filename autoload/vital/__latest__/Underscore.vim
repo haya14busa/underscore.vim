@@ -30,13 +30,13 @@ set cpo&vim
 " }}}
 
 function! s:_vital_loaded(V) abort
-  let s:V = a:V
-  let s:List = s:V.import('Data.List')
-  let s:Prelude = s:V.import('Prelude')
+    let s:V = a:V
+    let s:List = s:V.import('Data.List')
+    let s:Prelude = s:V.import('Prelude')
 endfunction
 
 function! s:_vital_depends() abort
-  return ['Data.List', 'Prelude']
+    return ['Data.List', 'Prelude']
 endfunction
 
 let s:_ = {}
