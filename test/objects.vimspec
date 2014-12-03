@@ -78,8 +78,21 @@ Describe objects
         End
     End
 
+    Context functions
+        It can grab the function names of any passed-in object
+            let obj = {'a' : 'dash', 'b' : g:_.map, 'c' : '/yo/', 'd' : g:_.reduce}
+            Assert Equals(g:_.functions(obj), ['b', 'd'])
+        End
+    End
+
+    Context methods
+        It alias for functions
+            Assert Equals(g:_.functions, g:_.methods)
+        End
+    End
+
     Context Not implemented yet
-        It keys/values/pairs/invert/functions/extend/pick/omit/clone/has/matches/property/isEqual/isEmpty/isDate/
+        It keys/values/pairs/invert/extend/pick/omit/clone/has/matches/property/isEqual/isEmpty/isDate/
             Skip 'should I implement it?'
         End
     End
