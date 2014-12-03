@@ -329,17 +329,31 @@ endfunction
 
 let s:_obj = { '_chain' : 0 }
 
-for s:method in keys(s:_)
-    execute join([
-    \   'function! s:_obj.' . s:method . '(...) abort',
-    \   '    let r = call(s:_.' . s:method . ', [self._val] + a:000, self)',
-    \   '    unlet self._val',
-    \   '    let self._val = r',
-    \   '    return self._chain ? self : self._val',
-    \   'endfunction'
-    \  ], "\n")
-endfor
-unlet s:method
+" underscore object management for extention
+let s:_objects = { '_ID' : 0 }
+function! s:_objects.register(obj) abort
+    let self._ID += 1
+    let self[self._ID] = deepcopy(a:obj)
+    return self._ID
+endfunction
+
+function! s:_.mixin(obj) abort
+    let id = s:_objects.register(a:obj)
+    for method in s:_.functions(a:obj)
+        let s:_[method] = s:_objects[id][method]
+        execute join([
+        \   'function! s:_obj.' . method . '(...) abort',
+        \   '    let r = call(s:_objects[' . id . '].' . method . ', [self._val] + a:000, self)',
+        \   '    unlet self._val',
+        \   '    let self._val = r',
+        \   '    return self._chain ? self : self._val',
+        \   'endfunction'
+        \  ], "\n")
+    endfor
+endfunction
+
+" Add all of the Underscore functions to the wrapper object.
+call s:_.mixin(s:_)
 
 function! s:_obj.value() abort
     return self._val
@@ -354,7 +368,8 @@ function! s:_obj.shift() abort
 endfunction
 
 function! s:import() abort
-    return deepcopy(s:_)
+    " NOTE: do not use deepcopy() to extendability. e.g. _.mixin
+    return s:_
 endfunction
 
 
