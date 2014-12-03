@@ -1,0 +1,35 @@
+Describe utility
+
+    Before all
+        let s:V = vital#of('vital')
+        let s:Un = s:V.import('Underscore')
+        let g:_ = s:Un.import()
+        call themis#func_alias({'_': g:_})
+        function! g:Un(...) abort
+            return call(s:Un.underscore, a:000)
+        endfunction
+    End
+
+    Context identity
+        It stooge is the same as his identity
+            let stooge = {'name' : 'moe'}
+            Assert Equals(g:_.identity(stooge), stooge)
+        End
+    End
+
+    Context mixin
+        let s:myreverse = {}
+        function! s:myreverse.myReverse(string)
+            return join(reverse(split(a:string, '\zs')), '')
+        endfunction
+        It mixed in a function to _
+            call g:_.mixin(s:myreverse)
+            Assert Equals(g:_.myReverse('panacea'), 'aecanap')
+        End
+        It mixed in a function to the OOP wrapper
+            call g:_.mixin(s:myreverse)
+            Assert Equals(g:Un('champ').myReverse(), 'pmahc')
+        End
+    End
+
+End
