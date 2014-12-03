@@ -32,11 +32,10 @@ set cpo&vim
 function! s:_vital_loaded(V) abort
     let s:V = a:V
     let s:List = s:V.import('Data.List')
-    let s:Prelude = s:V.import('Prelude')
 endfunction
 
 function! s:_vital_depends() abort
-    return ['Data.List', 'Prelude']
+    return ['Data.List']
 endfunction
 
 let s:_ = {}
@@ -293,23 +292,23 @@ function! s:_.tap(obj, interceptor) abort
     return a:obj
 endfunction
 
-function! s:_.is_number(...) abort
-    return call(s:Prelude.is_number, a:000)
+function! s:_.is_number(x) abort
+    return type(a:x) is type(0)
 endfunction
-function! s:_.is_float(...) abort
-    return call(s:Prelude.is_float, a:000)
+function! s:_.is_float(x) abort
+    return type(a:x) is type(0.0)
 endfunction
-function! s:_.is_string(...) abort
-    return call(s:Prelude.is_string, a:000)
+function! s:_.is_string(x) abort
+    return type(a:x) is type('')
 endfunction
-function! s:_.is_funcref(...) abort
-    return call(s:Prelude.is_funcref, a:000)
+function! s:_.is_funcref(x) abort
+    return type(a:x) is type(function('tr'))
 endfunction
-function! s:_.is_list(...) abort
-    return call(s:Prelude.is_list, a:000)
+function! s:_.is_list(x) abort
+    return type(a:x) is type([])
 endfunction
-function! s:_.is_dict(...) abort
-    return call(s:Prelude.is_dict, a:000)
+function! s:_.is_dict(x) abort
+    return type(a:x) is type({})
 endfunction
 
 
