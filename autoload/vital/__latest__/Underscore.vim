@@ -311,6 +311,10 @@ function! s:_.is_dict(x) abort
     return type(a:x) is type({})
 endfunction
 
+function! s:_.functions(obj) abort
+    return sort(filter(keys(a:obj), 's:_.is_funcref(a:obj[v:val])'))
+endfunction
+let s:_.methods = s:_.functions
 
 " Util:
 
