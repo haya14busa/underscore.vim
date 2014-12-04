@@ -40,6 +40,11 @@ endfunction
 
 let s:_ = {}
 
+function! s:import() abort
+    " NOTE: do not use deepcopy() to extendability. e.g. _.mixin
+    return s:_
+endfunction
+
 function! s:_(value) abort
     let obj = deepcopy(s:_obj)
     let obj._val = a:value
@@ -284,6 +289,43 @@ function! s:_.length(xs) abort
 endfunction
 let s:_.size = s:_.length
 
+" Functions:
+
+" TODO: test
+let s:_memoizes = { 'ID' : 0 }
+function! s:_memoizes.register(memoize_obj) abort
+    let self.ID += 1
+    let s:_memoizes[self.ID] = a:memoize_obj
+    return self.ID
+endfunction
+
+let s:_memoize = { 'cache' : {} }
+
+function! s:_memoize.new() abort
+    return deepcopy(self)
+endfunction
+
+function! s:_.memoize(F, ...) abort
+    let memoize = s:_memoize.new()
+    let memoize.f = a:F
+    let memoize.hasher = get(a:, 1, s:_.identity)
+    function! memoize.memo_f(key) abort
+        let key = self.hasher(a:key)
+        if !has_key(self.cache, key)
+            let self.cache[key] = self.f(key)
+        endif
+        return self.cache[key]
+    endfunction
+    let id = s:_memoizes.register(memoize)
+    " memoize instance string
+    let ins_str = "s:_memoizes['" . id . "']"
+    execute join([
+    \   'function! s:_memoize_' . id . '(...) abort',
+    \   '    return call(' . ins_str . '.memo_f, a:000, ' . ins_str .')',
+    \   'endfunction'
+    \  ], "\n")
+    return s:_function('s:_memoize_' . id)
+endfunction
 
 " Object:
 
@@ -367,14 +409,24 @@ function! s:_obj.shift() abort
     return self.tail()
 endfunction
 
-function! s:import() abort
-    " NOTE: do not use deepcopy() to extendability. e.g. _.mixin
-    return s:_
-endfunction
-
-
 " Helper:
 
+" function() wrapper
+if v:version > 703 || v:version == 703 && has('patch1170')
+    function! s:_function(fstr) abort
+        return function(a:fstr)
+    endfunction
+else
+    function! s:_SID() abort
+        return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze__SID$')
+    endfunction
+    let s:_s = '<SNR>' . s:_SID() . '_'
+    function! s:_function(fstr) abort
+        return function(substitute(a:fstr, 's:', s:_s, 'g'))
+    endfunction
+endif
+
+let s:_F = s:_.identity
 function! s:_make_pair(x) abort
     return [a:x, call(s:_F, [a:x], {})]
 endfunction
