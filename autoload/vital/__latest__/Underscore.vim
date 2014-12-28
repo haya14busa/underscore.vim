@@ -41,22 +41,17 @@ endfunction
 let s:_ = {}
 
 function! s:import() abort
-    " NOTE: do not use deepcopy() to extendability. e.g. _.mixin
-    return s:_
+    return deepcopy(s:_)
 endfunction
 
-function! s:_(value) abort
-    let obj = deepcopy(s:_obj)
+function! s:_._(value) abort
+    let obj = deepcopy(self._obj)
     let obj._val = a:value
     return obj
 endfunction
 
-function! s:underscore(value) abort
-    return s:_(a:value)
-endfunction
-
 function! s:_.chain(value) abort
-    let obj = s:_(a:value)
+    let obj = self._(a:value)
     let obj._chain = 1
     return obj
 endfunction
@@ -136,7 +131,7 @@ let s:_.all = s:_.every
 " xs, f
 function! s:_.some(xs, ...) abort
     let F = get(a:, 1, function('s:_truthy'))
-    return !empty(s:_(a:xs).filter(F))
+    return !empty(s:_._(a:xs).filter(F))
 endfunction
 let s:_.any = s:_.some
 
@@ -176,7 +171,7 @@ function! s:_.group_by(xs, f) abort
     if s:_.is_funcref(a:f)
         let s:_F = a:f
         let result = {}
-        let list = s:_(a:xs).map(function('s:_make_pair'))
+        let list = s:_._(a:xs).map(function('s:_make_pair'))
         for x in list
             let Val = x[0]
             let key = type(x[1]) !=# type('') ? string(x[1]) : x[1]
@@ -213,12 +208,12 @@ function! s:_.initial(xs, ...) abort
 endfunction
 
 function! s:_.last(xs, ...) abort
-    let r = call(s:_.take, [s:_(a:xs).reverse()] + a:000, self)
+    let r = call(s:_.take, [s:_._(a:xs).reverse()] + a:000, self)
     return s:_.is_list(r) ? reverse(r) : r
 endfunction
 
 function! s:_.compact(xs) abort
-    return s:_(a:xs).filter(function('s:_truthy'))
+    return s:_._(a:xs).filter(function('s:_truthy'))
 endfunction
 
 function! s:_.tail(xs, ...) abort
@@ -234,7 +229,7 @@ endfunction
 function! s:_.uniq_by(xs, f) abort
     if s:_.is_funcref(a:f)
         let s:_F = a:f
-        let list = s:_(a:xs).map(function('s:_make_pair'))
+        let list = s:_._(a:xs).map(function('s:_make_pair'))
         let i = 0
         let seen = {}
         while i < len(list)
@@ -369,7 +364,7 @@ endfunction
 
 " Chaining Obj:
 
-let s:_obj = { '_chain' : 0 }
+let s:_._obj = { '_chain' : 0 }
 
 " underscore object management for extention
 let s:_objects = { '_ID' : 0 }
@@ -382,9 +377,9 @@ endfunction
 function! s:_.mixin(obj) abort
     let id = s:_objects.register(a:obj)
     for method in s:_.functions(a:obj)
-        let s:_[method] = s:_objects[id][method]
+        let self[method] = s:_objects[id][method]
         execute join([
-        \   'function! s:_obj.' . method . '(...) abort',
+        \   'function! self._obj.' . method . '(...) abort',
         \   '    let r = call(s:_objects[' . id . '].' . method . ', [self._val] + a:000, self)',
         \   '    unlet self._val',
         \   '    let self._val = r',
@@ -397,15 +392,15 @@ endfunction
 " Add all of the Underscore functions to the wrapper object.
 call s:_.mixin(s:_)
 
-function! s:_obj.value() abort
+function! s:_._obj.value() abort
     return self._val
 endfunction
 
-function! s:_obj.pop() abort
+function! s:_._obj.pop() abort
     return self.initial()
 endfunction
 
-function! s:_obj.shift() abort
+function! s:_._obj.shift() abort
     return self.tail()
 endfunction
 
