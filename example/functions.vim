@@ -3,7 +3,7 @@ let s:Closure = s:V.import('Data.Closure')
 let s:un = s:V.import('Underscore')
 let s:_ = s:un.import()
 function! s:_(...) abort
-    return call(s:un.underscore, a:000)
+    return call(s:_._, a:000, s:_)
 endfunction
 
 function! s:lambda(x, ...) abort
