@@ -4,9 +4,10 @@ Describe utility
         let s:V = vital#of('vital')
         let s:Un = s:V.import('Underscore')
         let g:_ = s:Un.import()
+        let g:__ = s:Un.import()
         call themis#func_alias({'_': g:_})
         function! g:Un(...) abort
-            return call(s:Un.underscore, a:000)
+            return call(g:_._, a:000, g:_)
         endfunction
     End
 
@@ -29,6 +30,11 @@ Describe utility
         It mixed in a function to the OOP wrapper
             call g:_.mixin(s:myreverse)
             Assert Equals(g:Un('champ').myReverse(), 'pmahc')
+        End
+        It mixed in a function and do not apply to another underscore objects
+            call g:_.mixin(s:myreverse)
+            Assert False(has_key(g:__, 'myReverse'))
+            Assert False(has_key(g:__._('champ'), 'myReverse'))
         End
     End
 

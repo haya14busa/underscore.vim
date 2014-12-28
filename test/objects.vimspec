@@ -6,7 +6,7 @@ Describe objects
         let g:_ = s:Un.import()
         call themis#func_alias({'_': g:_})
         function! g:Un(...) abort
-            return call(s:Un.underscore, a:000)
+            return call(g:_._, a:000, g:_)
         endfunction
     End
 
