@@ -8,6 +8,13 @@ Describe collections
         function! g:Un(...) abort
             return call(g:_._, a:000, g:_)
         endfunction
+        function! g:MyCompare(i1, i2)
+          return a:i1 == a:i2 ? 0 : a:i1 > a:i2 ? 1 : -1
+        endfunc
+    End
+
+    After all
+      delfunction g:MyCompare
     End
 
     Context each
@@ -286,6 +293,45 @@ Describe collections
         End
     End
 
+    Context sort
+        It stooges sorted by age
+            function! s:test(a, b)
+                return a:a.age  - a:b.age
+            endfunction
+            let people = [{'name' : 'curly', 'age' : 50}, {'name' : 'moe', 'age' : 30}]
+            let r = g:_.chain(people)
+                \.sort('a:a.age - a:b.age')
+                \.map('v:val.name')
+                \.value()
+            Assert Equals(r, ['moe', 'curly'])
+            let r2 = g:_.chain(people)
+                \.sort(function('s:test'))
+                \.map('v:val.name')
+                \.value()
+            Assert Equals(r2, ['moe', 'curly'])
+        End
+        It sort number list with string
+          Assert Equals(g:_.sort([3, 1, 2], 'a:a - a:b'), [1, 2, 3])
+        End
+        It returns copy of sorted list
+          let xs = [3, 1, 2]
+          Assert Equals(g:_.sort(xs, 'a:a - a:b'), [1, 2, 3])
+          Assert Equals(xs, [3, 1, 2])
+        End
+        It can omit {func} (string representation)
+          Assert Equals(g:_.sort(['c', 'B', 'a']), ['B', 'a', 'c'])
+        End
+        It can accept 'i' as a {func} (case is ignored)
+          Assert Equals(g:_.sort(['c', 'B', 'a'], 'i'), ['a', 'B', 'c'])
+        End
+        It can accept 'n' as a {func} (sorted numerical)
+          Assert Equals(g:_.sort([11, 2, 3], 'n'), [2, 3, 11])
+        End
+        It can accept funcref
+          Assert Equals(g:_.sort([3, 1, 2], function('MyCompare')), [1, 2, 3])
+        End
+    End
+
     Context sort_by
         It stooges sorted by age
             function! s:test(val)
@@ -327,24 +373,11 @@ Describe collections
             let actual = g:_.sort_by(collection, 'v:val.x')
             Assert Equals(actual, collection)
         End
-    End
-
-    Context sort
-        It stooges sorted by age
-            function! s:test(a, b)
-                return a:a.age  - a:b.age
-            endfunction
-            let people = [{'name' : 'curly', 'age' : 50}, {'name' : 'moe', 'age' : 30}]
-            let r = g:_.chain(people)
-                \.sort('a:a.age - a:b.age')
-                \.map('v:val.name')
-                \.value()
-            Assert Equals(r, ['moe', 'curly'])
-            let r2 = g:_.chain(people)
-                \.sort(function('s:test'))
-                \.map('v:val.name')
-                \.value()
-            Assert Equals(r2, ['moe', 'curly'])
+        It returns copy of sorted list
+          let xs = ['one', 'two', 'three', 'four', 'five']
+          let r = g:_.sort_by(xs, function('len'))
+          Assert Equals(r, ['one', 'two', 'four', 'five', 'three'])
+          Assert Equals(xs, ['one', 'two', 'three', 'four', 'five'])
         End
     End
 
