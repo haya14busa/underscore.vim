@@ -55,7 +55,7 @@ function! s:_.chain(value) abort
     return obj
 endfunction
 
-" Iter:
+" Collections:
 
 function! s:_.each(xs, f) abort
     let F = s:_.is_string(a:f) ? function(a:f) : a:f
@@ -175,7 +175,7 @@ function! s:_.group_by(xs, f) abort
         let list = s:_._(a:xs).map(function('s:_make_pair'))
         for x in list
             let Val = x[0]
-            let key = type(x[1]) !=# type('') ? string(x[1]) : x[1]
+            let key = s:_.is_string(x[1]) ? x[1] : string(x[1])
             if has_key(result, key)
                 call add(result[key], Val)
             else
@@ -188,6 +188,13 @@ function! s:_.group_by(xs, f) abort
         return s:List.group_by(a:xs, a:f)
     endif
 endfunction
+
+function! s:_.length(xs) abort
+    return len(a:xs)
+endfunction
+let s:_.size = s:_.length
+
+" Arrays:
 
 " xs, n
 function! s:_.take(xs, ...) abort
@@ -213,19 +220,24 @@ function! s:_.last(xs, ...) abort
     return s:_.is_list(r) ? reverse(r) : r
 endfunction
 
-function! s:_.compact(xs) abort
-    return s:_._(a:xs).filter(function('s:_truthy'))
-endfunction
-
 function! s:_.tail(xs, ...) abort
     return a:xs[get(a:, 1, 1):]
 endfunction
 let s:_.rest = s:_.tail
 let s:_.drop = s:_.tail
 
+function! s:_.compact(xs) abort
+    return s:_._(a:xs).filter(function('s:_truthy'))
+endfunction
+
 function! s:_.flatten(xs, ...) abort
     return call(s:List.flatten, [a:xs] + a:000)
 endfunction
+
+function! s:_.uniq(xs) abort
+    return s:_.uniq_by(a:xs, s:_.identity)
+endfunction
+let s:_.unique = s:_.uniq
 
 function! s:_.uniq_by(xs, f) abort
     if s:_.is_funcref(a:f)
@@ -248,11 +260,6 @@ function! s:_.uniq_by(xs, f) abort
     endif
 endfunction
 let s:_.unique_by = s:_.uniq_by
-
-function! s:_.uniq(xs) abort
-    return s:_.uniq_by(a:xs, s:_.identity)
-endfunction
-let s:_.unique = s:_.uniq
 
 function! s:_.zip(...) abort
     return call(s:List.zip, a:000)
@@ -279,11 +286,6 @@ endfunction
 function! s:_.concat(xs, ys) abort
     return a:xs + a:ys
 endfunction
-
-function! s:_.length(xs) abort
-    return len(a:xs)
-endfunction
-let s:_.size = s:_.length
 
 " Functions:
 
