@@ -1,7 +1,6 @@
 "=============================================================================
 " FILE: autoload/vital/__latest__/Underscore.vim
 " AUTHOR: haya14busa
-" Last Change: 01-12-2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -141,25 +140,27 @@ endfunction
 let s:_.include = s:_.contains
 
 function! s:_.sort(xs, ...) abort
+    let xs = copy(a:xs)
     if empty(a:0)
-        return sort(a:xs)
+        return sort(xs)
     elseif s:_.is_funcref(a:1) || a:1 is 0 || a:1 == '' || a:1 == 1 || a:1 =~# '[in]'
-        return sort(a:xs, a:1)
+        return sort(xs, a:1)
     else
-        return s:List.sort(a:xs, a:1)
+        return s:List.sort(xs, a:1)
     endif
 endfunction
 
 function! s:_.sort_by(xs, f) abort
+    let xs = copy(a:xs)
     if s:_.is_funcref(a:f)
         let s:_F = a:f
-        return s:_.chain(a:xs)
+        return s:_.chain(xs)
             \.map(function('s:_make_pair'))
             \.sort('a:a[1] ==# a:b[1] ? 0 : a:a[1] ># a:b[1] ? 1 : -1')
             \.map('v:val[0]')
             \.value()
     else
-        return s:List.sort_by(a:xs, a:f)
+        return s:List.sort_by(xs, a:f)
     endif
 endfunction
 
