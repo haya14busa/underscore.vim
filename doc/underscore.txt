@@ -1,0 +1,307 @@
+*underscore.txt*	underscore.vim
+
+Author  : haya14busa <hayabusa1419@gmail.com>
+Version : 0.9.0
+License : MIT license {{{
+
+	Copyright (c) 2014 haya14busa
+
+	Permission is hereby granted, free of charge, to any person obtaining
+	a copy of this software and associated documentation files (the
+	"Software"), to deal in the Software without restriction, including
+	without limitation the rights to use, copy, modify, merge, publish,
+	distribute, sublicense, and/or sell copies of the Software, and to
+	permit persons to whom the Software is furnished to do so, subject to
+	the following conditions:
+	The above copyright notice and this permission notice shall be
+	included in all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+}}}
+
+CONTENTS				*underscore-contents*
+
+	Introduction			|underscore-introduction|
+	Install				|underscore-install|
+	Collections			|underscore-collections|
+	ChangeLog			|underscore-changelog|
+
+==============================================================================
+INTRODUCTION					*underscore-introduction*
+
+	*underscore.vim* is a Vim script library that provides a whole mess of
+	useful functional programming helpers.
+
+	It's api and documentation are heavily inspired by Underscore.js[1]
+	and Underscore.lua[2]. It's implementation are heavily inspired by
+	|vital.vim|.
+
+	    [1]: http://underscorejs.org/
+	    [2]: http://mirven.github.io/underscore.lua/
+	    [3]: https://github.com/vim-jp/vital.vim
+
+==============================================================================
+INSTALL							*underscore-install*
+
+	1. Install |vital.vim| and |underscore.vim| with your favorite plugin
+	manager.
+>
+		NeoBundle 'vim-jp/vital.vim'
+		NeoBundle 'haya14busa/underscore.vim'
+
+		Plugin 'vim-jp/vital.vim'
+		Plugin 'haya14busa/underscore.vim'
+
+		Plug 'vim-jp/vital.vim'
+		Plug 'haya14busa/underscore.vim'
+<
+	2. Embed underscore.vim into your plugin with |:Vitalize| (assume
+	current directory is the root of your plugin repository).
+	See |:Vitalize| for more information. >
+	    :Vitalize . --name={plugin_name} Underscore
+<
+	3. You can update underscore.vim with |:Vitalize|. >
+	    :Vitalize .
+<
+==============================================================================
+USAGE							*underscore-usage*
+
+	Import underscore object (`s:_`) like this.
+>
+	let s:V = vital#of('vital')
+	let s:_ = s:V.import('Underscore').import()
+<
+==============================================================================
+COLLECTIONS						*underscore-collections*
+
+_.each({list}, {func})			*underscore-each* *underscore-for_each*
+					*_.each()* *_.for_each()*
+	Iterates over a list of elements, yielding each in turn to an iteratee
+	function. Returns the {list} for chaining. alias: for_each
+>
+	function! s:echo(x, ...) abort
+	    echo a:x
+	endfunction
+	function! s:echo_with_count(x, cnt) abort
+	    echo a:cnt . ' : ' . a:x
+	endfunction
+
+	call s:_.each(['one', 'two', 'three'], function('s:echo'))
+	" => echo each number in turn...
+	call s:_.each(['one', 'two', 'three'], function('s:echo_with_count'))
+	" => echo each number with count in turn...
+
+_.map({list}, {func})			*underscore-map* *underscore-collect*
+					*_.map()* *_.collect()*
+	Produces a new array of values by mapping each value in list through a
+	transformation function. alias: collect
+>
+	echo s:_.map([1, 2, 3], 'v:val * 3')
+	" => [3, 6, 9]
+
+_.reduce({list}, {init}, {func})	*underscore-reduce* *underscore-foldl*
+					*underscore-inject*
+					*_.reduce()* *_.foldl()* *_.inject()*
+	Reduces the list {list} using the binary operator {func}, from left to
+	right. The starting value of the reduction (typically the
+	left-identity of the operator) is {init}. alias: foldl, inject
+>
+	function! s:add(x, y) abort
+	    return a:x + a:y
+	endfunction
+
+	echo s:_.reduce([1, 2, 3], 0, 'v:memo + v:val')
+	echo s:_.reduce([1, 2, 3], 0, function('s:add'))
+	" => 6
+
+_.reduceRight({list}, {init}, {func})	*underscore-reduceRight*
+					*underscore-foldr*
+					*_.reduceRight()* *_.foldr()*
+	The right-associative version of |_.reduce()|. alias: foldr
+>
+	let list = [[0, 1], [2, 3], [4, 5]]
+	let flat = s:_.reduceRight(list, [], 'v:memo + v:val')
+	echo flat
+	" => [4, 5, 2, 3, 0, 1]
+
+_.find({list}, {default}, {func})	*underscore-find* *underscore-detect*
+					*_.find()* *_.detect()*
+	Looks through each value in the {list}, returning the first one that
+	passes a truth test ({func} as a predicate), or {default} if no value
+	passes the test. The function returns as soon as it finds an
+	acceptable element, and doesn't traverse the entire list.
+	alias: detect
+>
+	let even = s:_.find([1, 2, 3, 4, 5, 6], -1, 'v:val % 2 == 0')
+	echo even
+	" => 2
+
+_.filter({list}, {func})		*underscore-filter* *underscore-select*
+					*_.filter()* *_.select()*
+	Looks through each value in the {list}, returning an array of all the
+	values that pass a truth test ({func} as a predicate). alias: select
+>
+	let evens = s:_.filter([1, 2, 3, 4, 5, 6], 'v:val % 2 == 0')
+	echo evens
+	" => [2, 4, 6]
+
+_.reject({list}, {func})		*underscore-reject* *_.reject()*
+	Returns the values in {list} without the elements that the truth test
+	({func} as a predicate) passes. The opposite of filter.
+>
+	let odds = s:_.reject([1, 2, 3, 4, 5, 6], 'v:val % 2 == 0')
+	echo odds
+	" => [1, 3, 5]
+
+_.every({list}, {func})			*underscore-every* *underscore-all*
+					*_.every()* *_.all()*
+	Returns true if all of the values in the {list} pass the predicate
+	({func}) truth test. alias: all
+>
+	echo s:_.every([2, 4, 6, 7], 'v:val % 2 == 0')
+	" => 0
+	echo s:_.every([2, 4, 6, 8], 'v:val % 2 == 0')
+	" => 1
+
+_.some({list}, {func})			*underscore-some* *underscore-any*
+					*_.some()* *_.any()*
+	Returns true if any of the values in the {list} pass the
+	predicate({func}) truth test. Short-circuits and stops traversing the
+	{list} if a true element is found. alias: any
+>
+	echo s:_.some([2, 4, 6, 7], 'v:val % 2 == 0')
+	" => 1
+	echo s:_.some([1, 3, 5, 7], 'v:val % 2 == 0')
+	" => 0
+
+_.contains({list}, {func})		*underscore-contains* *underscore-include*
+					*_.contains()* *_.include()*
+	Returns true if the value is present in the {list}. alias: include
+>
+	echo s:_.contains([1, 2, 3], 3)
+	" => 1
+
+_.sort({list} [, {func}])		*underscore-sort* *_.sort()*
+	Returns sorted copy of {list}. If {func} is omitted, empty, 0,
+	|Funcref|, 'i', or 'n', function returns the same result as |sort()|.
+	When {expr} is a |String|, this function uses {expr} to compare items.
+	Inside {expr} a:a and a:b have the value of the current items.  The
+	evaluating result of {expr} must have zero if they are equal, 1 or
+	bigger if a:a sorts after the a:b, -1 or smaller if a:a sorts before
+	a:b.
+>
+	echo s:_.sort([3, 1, 2], 'a:a - a:b')
+	" => [1, 2, 3]
+
+_.sort_by({list}, {func})		*underscore-sort_by* *_.sort_by()*
+	Returns a sorted copy of {list}, ranked in ascending order by the
+	results of running each value in {list} through {func}.
+>
+	echo s:_.sort_by(['three', 'four', 'five'], function('len'))
+	echo s:_.sort_by(['three', 'four', 'five'], 'len(v:val)')
+	" => ['four', 'five', 'three']
+
+_.reverse({list})			*underscore-reverse* *_.reverse()*
+	Returns a copy of reversed {list}.
+>
+	echo s:_.reverse([3, 1, 2])
+	" => [2, 1, 3]
+
+_.group_by({list}, {func})		*underscore-group_by* *_.group_by()*
+	Returns a |Dictionary| grouped by the result of running each value in
+	{list} through {func}.
+>
+	echo s:_.group_by(['one', 'two', 'three'], function('len'))
+	echo s:_.group_by(['one', 'two', 'three'], 'len(v:val)')
+	" => {'3': ['one', 'two'], '5': ['three']}
+
+_.length({list})			*underscore-length* *underscore-size*
+					*_.contains()* *_.size()*
+	Return the number of values in the {list}. alias: size
+>
+	echo s:_.size({'one': 1, 'two': 2, 'three': 3})
+	" => 3
+
+_.take({list} [, {n}])	*underscore-take* *underscore-head* *underscore-first* 
+					*_.take()* *_.head()* *_.first()*
+	Returns the first element of a {list}. Passing {n} will return the
+	first {n} elements of the {list}.
+>
+	echo s:_.take([5, 4, 3, 2, 1])
+	" => 5
+	echo s:_.take([5, 4, 3, 2, 1], 3)
+	" => [5, 4, 3]
+
+_.initial({list} [, {n}])		*underscore-initial* *_.initial()*
+	Returns everything but the last entry of the {list}. Pass {n} to
+	exclude the last {n} elements from the result.
+>
+	echo s:_.initial([5, 4, 3, 2, 1])
+	" => [5, 4, 3, 2]
+	echo s:_.initial([5, 4, 3, 2, 1], 2)
+	" => [5, 4, 3]
+
+_.last({list} [, {n}])			*underscore-last* *_.last()*
+	Returns the last element of a {list}. Passing {n} will return the last
+	{n} elements of the {list}.
+>
+	echo s:_.last([5, 4, 3, 2, 1])
+	" => 1
+	echo s:_.last([5, 4, 3, 2, 1], 3)
+	" => [3, 2, 1]
+
+_.rest({list} [, {index}])	*underscore-rest* *underscore-tail*
+				*underscore-drop* *_.take()* *_.tail()* *_.drop()*
+	Returns the rest of the elements in a {list}. Pass an {index} to return
+	the values of the {list} from that {index} onward.
+>
+	echo s:_.rest([5, 4, 3, 2, 1])
+	" => [4, 3, 2, 1]
+	echo s:_.rest([5, 4, 3, 2, 1], 3)
+	" => [2, 1]
+
+_.compact({list})			*underscore-compact* *_.compact()*
+	Returns a copy of the {list} with all falsy values removed.
+>
+	echo s:_.compact([0, 1, 2, 3, '', 'vim'])
+	" => [1, 2, 3, 'vim']
+
+_.flatten({list} [, {limit}])		*underscore-flatten* *_.flatten()*
+	Flattens a nested {list} (the nesting can be specified with {limit}
+	default is to any depth). 
+>
+	echo s:_.flatten([1, [2], [3, [[4]]]])
+	" => [1, 2, 3, 4]
+	echo s:_.flatten([1, [2], [3, [[4]]]], 2)
+	" => [1, 2, 3, [4]]
+
+_.uniq({list})				*underscore-uniq* *underscore-unique* 
+					*_.uniq()* *_.unique()*
+	Produces a duplicate-free version of the {list}. alias: unique
+>
+	echo s:_.uniq([1, 2, 1, 3, 1, 4])
+	" => [1, 2, 3, 4]
+
+_.uniq_by({list}, {func})	*underscore-uniq_by* *underscore-unique_by* 
+				*_.uniq_by()* *_.unique_by()*
+	Produces a duplicate-free version of the {list}. The uniquness is
+	judged by the result of {func}. alias: unique_by
+>
+	echo s:_.uniq_by([4, 2, 3, 1, 4], 'v:val % 2')
+	" => [4, 3]
+
+==============================================================================
+CHANGELOG						*underscore-changelog*
+
+0.9.0	2014-12-29
+	- Init.
+
+
+vim:tw=78:ts=8:ft=help:norl:noet:fen:fdl=0:fdm=marker:
