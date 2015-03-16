@@ -400,11 +400,13 @@ function! s:_._obj.value() abort
 endfunction
 
 function! s:_._obj.pop() abort
-    return self.initial()
+    let x = call(s:List.pop, [self._val])
+    return self._chain ? self : x
 endfunction
 
 function! s:_._obj.shift() abort
-    return self.tail()
+    let x = call(s:List.shift, [self._val])
+    return self._chain ? self : x
 endfunction
 
 " Helper:
