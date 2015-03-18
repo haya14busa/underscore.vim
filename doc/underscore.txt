@@ -229,7 +229,7 @@ _.length({list})			*underscore-length* *underscore-size*
 	echo s:_.size({'one': 1, 'two': 2, 'three': 3})
 	" => 3
 
-_.take({list} [, {n}])	*underscore-take* *underscore-head* *underscore-first* 
+_.take({list} [, {n}])	*underscore-take* *underscore-head* *underscore-first*
 					*_.take()* *_.head()* *_.first()*
 	Returns the first element of a {list}. Passing {n} will return the
 	first {n} elements of the {list}.
@@ -275,21 +275,21 @@ _.compact({list})			*underscore-compact* *_.compact()*
 
 _.flatten({list} [, {limit}])		*underscore-flatten* *_.flatten()*
 	Flattens a nested {list} (the nesting can be specified with {limit}
-	default is to any depth). 
+	default is to any depth).
 >
 	echo s:_.flatten([1, [2], [3, [[4]]]])
 	" => [1, 2, 3, 4]
 	echo s:_.flatten([1, [2], [3, [[4]]]], 2)
 	" => [1, 2, 3, [4]]
 
-_.uniq({list})				*underscore-uniq* *underscore-unique* 
+_.uniq({list})				*underscore-uniq* *underscore-unique*
 					*_.uniq()* *_.unique()*
 	Produces a duplicate-free version of the {list}. alias: unique
 >
 	echo s:_.uniq([1, 2, 1, 3, 1, 4])
 	" => [1, 2, 3, 4]
 
-_.uniq_by({list}, {func})	*underscore-uniq_by* *underscore-unique_by* 
+_.uniq_by({list}, {func})	*underscore-uniq_by* *underscore-unique_by*
 				*_.uniq_by()* *_.unique_by()*
 	Produces a duplicate-free version of the {list}. The uniquness is
 	judged by the result of {func}. alias: unique_by
