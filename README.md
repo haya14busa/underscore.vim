@@ -33,7 +33,7 @@ echo s:_._(range(20))
 :package: Installation :package:
 --------------------------------
 
-1) Install |vital.vim| and |underscore.vim| with your favorite plugin manager.
+1) Install [vital.vim] and underscore.vim with your favorite plugin manager.
 
 ```vim
 NeoBundle 'vim-jp/vital.vim'
@@ -46,7 +46,7 @@ Plug 'vim-jp/vital.vim'
 Plug 'haya14busa/underscore.vim'
 ```
 
-2) Embed underscore.vim into your plugin with |:Vitalize|.
+2) Embed underscore.vim into your plugin with `:Vitalize`.
 
 ```vim
 :Vitalize . --name={plugin_name} Underscore
@@ -141,7 +141,7 @@ echo s:_.chain(range(1,100))
 "   109296
 ```
 
-### :zap: Extend to worke with other library :zap:
+### :zap: Extend to work with other library :zap:
 - [vim-jp/vital.vim](https://github.com/vim-jp/vital.vim)
 
 You can extend underscore.vim with `_.mixin()` :sparkles:
