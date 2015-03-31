@@ -33,6 +33,7 @@ CONTENTS				*underscore-contents*
 	Collections			|underscore-collections|
 	Functions			|underscore-functions|
 	Objects				|underscore-objects|
+	Utility				|underscore-utility|
 	ChangeLog			|underscore-changelog|
 
 ==============================================================================
@@ -404,6 +405,58 @@ _.functions({object})		*underscore-functions* *underscore-methods*
 	echo s:_.functions(s:_)
 	" => ['_', 'all', 'any', 'chain', ...]
 	
+==============================================================================
+UTILITY							*underscore-utility*
+
+_.TRUE					*underscore-TRUE* *_.TRUE*
+	This is 1 to represent true as boolean like syntax.
+>
+	echo s:_.TRUE ? 'true' : '' | " => 'true'
+
+_.FALSE					*underscore-FALSE* *_.FALSE*
+	This is 0 to represent false as boolean like syntax.
+>
+	echo s:_.FALSE ? '' : 'false' | " => 'false'
+
+_.identity({value})			*underscore-identity* *_.identity()*
+	Returns the same value that is used as the argument
+>
+	let x = 'a'
+	echo x is# s:_.identity(x)
+	" => 1
+
+_.mixin({object})			*underscore-mixin* *_.mixin()*
+	Allows you to extend Underscore.vim with your own utility functions.
+	Pass an object of `{name: funcref}` definitions to have your functions
+	added to the Underscore object, as well as the OOP wrapper.
+>
+	let s:ex = {}
+	function! s:ex.capitalize(str)
+	  return toupper(a:str[0]) . tolower(a:str[1:])
+	endfunction
+	function! s:ex.startsWith(str, start)
+	  return split(a:str, '\zs')[0] is# a:start
+	endfunction
+	call s:_.mixin(s:ex)
+	echo s:_.capitalize('haya14busa')
+	" => 'Haya14busa'
+	echo s:_.chain('haya14busa')
+	  \.capitalize()
+	  \.startsWith('H')
+	  \.value()
+	" => 1
+<
+	Even you can extend underscore.vim with other libraries like
+	|Vital.Data.String|!
+>
+	call s:_.mixin(vital#of('vital').import('Data.String'))
+	echo s:_.chain("  haya14busa  \n")
+	  \.chomp()
+	  \.trim()
+	  \.pad_left(14, '#')
+	  \.value()
+	" => '####haya14busa'
+
 
 ==============================================================================
 CHANGELOG						*underscore-changelog*
