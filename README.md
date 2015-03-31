@@ -145,7 +145,7 @@ echo s:_.chain(range(1,100))
 - [vim-jp/vital.vim](https://github.com/vim-jp/vital.vim)
 
 You can extend underscore.vim with `_.mixin()` :sparkles:
-See [`:h _.mixin()`]
+See [`:h _.mixin()`](doc/underscore.txt)
 
 #### underscore-string.vim
 
