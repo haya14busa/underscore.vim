@@ -228,7 +228,7 @@ _.group_by({list}, {func})		*underscore-group_by* *_.group_by()*
 	" => {'3': ['one', 'two'], '5': ['three']}
 
 _.length({list})			*underscore-length* *underscore-size*
-					*_.contains()* *_.size()*
+					*_.length()* *_.size()*
 	Return the number of values in the {list}. alias: size
 >
 	echo s:_.size({'one': 1, 'two': 2, 'three': 3})
