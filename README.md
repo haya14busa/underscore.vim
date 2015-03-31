@@ -1,7 +1,7 @@
 underscore.vim
 ==============
 
-[![Build Status](https://travis-ci.org/haya14busa/uns.svg?branch=master)](https://travis-ci.org/haya14busa/underscore.vim)
+[![Build Status](https://travis-ci.org/haya14busa/underscore.vim.svg?branch=master)](https://travis-ci.org/haya14busa/underscore.vim)
 [![Build status](https://ci.appveyor.com/api/projects/status/ks6gtsu46c1djoo6/branch/master)](https://ci.appveyor.com/project/haya14busa/underscore-vim/branch/master)
 [![](http://img.shields.io/github/tag/haya14busa/underscore.vim.svg)](https://github.com/haya14busa/underscore.vim/releases)
 [![](http://img.shields.io/github/issues/haya14busa/underscore.vim.svg)](https://github.com/haya14busa/underscore.vim/issues)
