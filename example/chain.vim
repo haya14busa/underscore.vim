@@ -54,4 +54,3 @@ let youngest = s:_.chain(stooges)
 echo youngest
 " => "moe is 21"
 
-echo s:List.uniq_by(range())

@@ -43,13 +43,14 @@ INTRODUCTION					*underscore-introduction*
 	*underscore.vim* is a Vim script library that provides a whole mess of
 	useful functional programming helpers.
 
-	It's api and documentation are heavily inspired by Underscore.js[1]
-	and Underscore.lua[2]. It's implementation are heavily inspired by
-	|vital.vim|.
+	It's api and documentation are heavily inspired by Underscore.js[1],
+	lodash[2] and Underscore.lua[3]. It's implementation are heavily
+	inspired by and taken from |vital.vim|[4].
 
-	    [1]: http://underscorejs.org/
-	    [2]: http://mirven.github.io/underscore.lua/
-	    [3]: https://github.com/vim-jp/vital.vim
+	  [1]: http://underscorejs.org/
+	  [2]: https://github.com/lodash/lodash
+	  [3]: http://mirven.github.io/underscore.lua/
+	  [4]: https://github.com/vim-jp/vital.vim
 
 ==============================================================================
 INSTALL							*underscore-install*
@@ -405,7 +406,7 @@ _.functions({object})		*underscore-functions* *underscore-methods*
 >
 	echo s:_.functions(s:_)
 	" => ['_', 'all', 'any', 'chain', ...]
-	
+
 ==============================================================================
 UTILITY							*underscore-utility*
 
