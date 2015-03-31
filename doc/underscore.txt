@@ -303,6 +303,43 @@ _.zip({list}, ...)			*underscore-zip* *_.zip()*
 	echo s:_.zip(['a', 'b', 'c'], [1, 2, 3])
 	" => [['a', 1], ['b', 2], ['c', 3]]
 
+_.pop({list})				*underscore-pop* *_.pop()*
+	Removes the last element from {list} and returns the element.
+>
+	let xs = ['a', 'b', 'c']
+	echo s:_.pop(xs)
+	" => 'c'
+	echo xs
+	" => ['a', 'b']
+
+_.push({list}, {value})			*underscore-push* *_.push()*
+	Appends {value} to the end of {list} and returns the list itself.
+>
+	let xs = ['a', 'b']
+	echo s:_.push(xs, 'c')
+	" => ['a', 'b', 'c']
+	echo xs
+	" => ['a', 'b', 'c']
+
+_.shift({list})				*underscore-shift* *_.shift()*
+	Removes the first element from {list} and returns the element.
+>
+	let xs = ['a', 'b', 'c']
+	echo s:_.shift(xs)
+	" => 'a'
+	echo xs
+	" => ['b', 'c']
+
+_.unshift({list}, {value})		*underscore-unshift* *_.unshift()*
+	Inserts {value} to the head of {list} and returns the list itself.
+>
+	let xs = ['b', 'c']
+	echo s:_.unshift(xs, 'a')
+	" => ['a', 'b', 'c']
+	echo xs
+	" => ['a', 'b', 'c']
+
+
 ==============================================================================
 CHANGELOG						*underscore-changelog*
 
