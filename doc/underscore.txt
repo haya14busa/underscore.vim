@@ -31,6 +31,7 @@ CONTENTS				*underscore-contents*
 	Introduction			|underscore-introduction|
 	Install				|underscore-install|
 	Collections			|underscore-collections|
+	Functions			|underscore-functions|
 	ChangeLog			|underscore-changelog|
 
 ==============================================================================
@@ -338,6 +339,23 @@ _.unshift({list}, {value})		*underscore-unshift* *_.unshift()*
 	" => ['a', 'b', 'c']
 	echo xs
 	" => ['a', 'b', 'c']
+
+==============================================================================
+FUNCTIONS						*underscore-functions*
+
+_.memoize({func} [, {hashfunc}])		*underscore-memoize* *_.memoize()*
+	Memoizes a given function by caching the computed result. If passed
+	an optional hashFunction, it will be used to compute the hash key for
+	storing the result, based on the arguments to the original function.
+>
+	let s:i = 0
+	function! s:_fibo(n) abort
+	  let s:i += 1 
+	  return a:n < 2 ? a:n : s:fibo(a:n-1) + s:fibo(a:n-2)
+	endfunction
+	let s:fibo = s:_.memoize(function('s:_fibo'))
+	echo s:fibo(30) | " => 832040
+	echo s:i | " => 31
 
 
 ==============================================================================
