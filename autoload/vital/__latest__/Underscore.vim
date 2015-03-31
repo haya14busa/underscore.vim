@@ -433,8 +433,8 @@ function! s:_make_pair(x) abort
 endfunction
 
 function! s:_truthy(x) abort
-    return (!s:_.is_number(v:val) || v:val) &&
-    \      (!s:_.is_string(v:val) || v:val != "")
+    return (!s:_.is_number(a:x) || a:x) &&
+    \      (!s:_.is_string(a:x) || a:x != "")
 endfunction
 
 " Restore 'cpoptions' {{{
