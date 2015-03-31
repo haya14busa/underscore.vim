@@ -32,6 +32,7 @@ CONTENTS				*underscore-contents*
 	Install				|underscore-install|
 	Collections			|underscore-collections|
 	Functions			|underscore-functions|
+	Objects				|underscore-objects|
 	ChangeLog			|underscore-changelog|
 
 ==============================================================================
@@ -357,6 +358,52 @@ _.memoize({func} [, {hashfunc}])		*underscore-memoize* *_.memoize()*
 	echo s:fibo(30) | " => 832040
 	echo s:i | " => 31
 
+==============================================================================
+OBJECTS							*underscore-objects*
+
+_.tap({object}, {interceptor})	  		*underscore-tap* *_.tap()*
+	Invokes interceptor |Funcref| with the object, and then returns
+	object. The primary purpose of this method is to "tap into" a method
+	chain, in order to perform operations on intermediate results within
+	the chain.
+>
+	function! s:echo(msg)
+	  echo a:msg
+	endfunction
+
+	echo s:_.chain([1,2,3,200])
+	  \.filter('v:val % 2 == 0')
+	  \.tap(function('s:echo'))
+	  \.map('v:val * v:val')
+	  \.value()
+	" => // [2, 200] (echoed)
+	" => [4, 40000]
+
+_.is_number({value})			*underscore-is_number* *_.is_number()*
+	Returns non-zero if {value} is a |Number|, zero otherwise.
+
+_.is_float({value})			*underscore-is_float* *_.is_float()*
+	Returns non-zero if {value} is a |Float|, zero otherwise.
+
+_.is_string({value})			*underscore-is_string* *_.is_string()*
+	Returns non-zero if {value} is a String (|string|), zero otherwise.
+
+_.is_funcref({value})			*underscore-is_funcref* *_.is_funcref()*
+	Returns non-zero if {value} is a |Funcref|, zero otherwise.
+
+_.is_list({value})			*underscore-is_list* *_.is_list()*
+	Returns non-zero if {value} is a |List|, zero otherwise.
+
+_.is_dict({value})			*underscore-is_dict* *_.is_dict()*
+	Returns non-zero if {value} is a |Dictionary|, zero otherwise.
+
+_.functions({object})		*underscore-functions* *underscore-methods*
+				*_.functions()* *_.methods*
+	Returns a list of function names from all {object}. alias: methods
+>
+	echo s:_.functions(s:_)
+	" => ['_', 'all', 'any', 'chain', ...]
+	
 
 ==============================================================================
 CHANGELOG						*underscore-changelog*
