@@ -44,7 +44,7 @@ Describe chaining
         It can chain together array functions.
             let numbers = g:_.chain([1, 2, 3, 4, 5])
                 \.reverse()
-                \.concat([5, 5, 5])
+                \.push(5).push(5).push(5)
                 \.unshift(17)
                 \.pop()
                 \.map('v:val * 2')
