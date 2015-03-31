@@ -34,6 +34,7 @@ CONTENTS				*underscore-contents*
 	Functions			|underscore-functions|
 	Objects				|underscore-objects|
 	Utility				|underscore-utility|
+	Chaining			|underscore-chaining|
 	ChangeLog			|underscore-changelog|
 
 ==============================================================================
@@ -90,10 +91,10 @@ _.each({list}, {func})			*underscore-each* *underscore-for_each*
 	function. Returns the {list} for chaining. alias: for_each
 >
 	function! s:echo(x, ...) abort
-	    echo a:x
+	  echo a:x
 	endfunction
 	function! s:echo_with_count(x, cnt) abort
-	    echo a:cnt . ' : ' . a:x
+	  echo a:cnt . ' : ' . a:x
 	endfunction
 
 	call s:_.each(['one', 'two', 'three'], function('s:echo'))
@@ -117,7 +118,7 @@ _.reduce({list}, {init}, {func})	*underscore-reduce* *underscore-foldl*
 	left-identity of the operator) is {init}. alias: foldl, inject
 >
 	function! s:add(x, y) abort
-	    return a:x + a:y
+	  return a:x + a:y
 	endfunction
 
 	echo s:_.reduce([1, 2, 3], 0, 'v:memo + v:val')
@@ -352,7 +353,7 @@ _.memoize({func} [, {hashfunc}])		*underscore-memoize* *_.memoize()*
 >
 	let s:i = 0
 	function! s:_fibo(n) abort
-	  let s:i += 1 
+	  let s:i += 1
 	  return a:n < 2 ? a:n : s:fibo(a:n-1) + s:fibo(a:n-2)
 	endfunction
 	let s:fibo = s:_.memoize(function('s:_fibo'))
@@ -457,6 +458,61 @@ _.mixin({object})			*underscore-mixin* *_.mixin()*
 	  \.value()
 	" => '####haya14busa'
 
+==============================================================================
+CHAINING				 *underscore-chaining*
+	You can use underscore.vim in either an object-oriented or a
+	functional style, depending on your preference. The following two
+	lines of code are identical ways to double a list of numbers.
+>
+	echo s:_.map([1, 2, 3],   'v:val * 2')
+	echo s:_._([1, 2, 3]).map('v:val * 2')
+	" => [2, 4, 6]
+<
+	Calling |_.chain()| will cause all future method calls to return
+	wrapped underscore objects.  When you've finished the computation,
+	call |_(obj).value()| to retrieve the final value.
+
+_.chain({value})			*underscore-chain* *_.chain()*
+	Creates an wrapped underscore object that wraps value with explicit
+	method chaining enabled. Calling methods on this object will continue
+	to return wrapped underscore objects until |_(obj).value()| is called.
+>
+	let users = [
+	\  { 'user': 'barney',  'age': 36 },
+	\  { 'user': 'fred',    'age': 40 },
+	\  { 'user': 'pebbles', 'age': 1 }
+	\]
+
+	echo s:_.chain(users)
+	  \.sort_by('v:val.age')
+	  \.map('v:val.user . " is " . v:val.age')
+	  \.first()
+	  \.value()
+	" => pebbles is 1
+
+	function! s:toFizzBuzz(x)
+	  return a:x%15 ? a:x%3 ? a:x%5 ? a:x : 'Buzz' : 'Fizz' : 'FizzBuzz'
+	endfunction
+
+	echo s:_._(range(20))
+	  \.chain()
+	  \.map('v:val + 1')
+	  \.filter('v:val % 2')
+	  \.map(function('s:toFizzBuzz'))
+	  \.value()
+	" [1, 'Fizz', 'Buzz', 7, 'Fizz', 11, 13, 'FizzBuzz', 17, 19]
+
+_(obj).value()				*underscore-value* *_(obj).value()*
+	Extracts the value of a wrapped underscore object.
+
+_._({value})				*underscore-_* *_._()*
+	Creates an wrapped underscore object which wraps value to enable
+	implicit chaining.
+>
+	echo s:_._(range(1, 10)).reduce(0, 'v:memo + v:val')
+	" => 55
+	echo s:_._(range(10)).filter('v:val % 2 == 0')
+	" => [0, 2, 4, 6, 8]
 
 ==============================================================================
 CHANGELOG						*underscore-changelog*
