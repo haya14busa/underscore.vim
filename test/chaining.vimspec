@@ -7,9 +7,13 @@ Describe chaining
         call themis#func_alias({'_': g:_})
     End
 
+    After all
+      delfunction g:WordCnt
+    End
+
     Context map/flatten/reduce
         It counted all the letters in the song
-            function! s:word_cnt(memo, val) abort
+            function! g:WordCnt(memo, val) abort
                 let a:memo[a:val] = get(a:memo, a:val, 0) + 1
                 return a:memo
             endfunction
@@ -22,7 +26,7 @@ Describe chaining
             let counts = g:_.chain(lyrics)
                 \.map('split(v:val, "\\zs")')
                 \.flatten()
-                \.reduce({}, function('s:word_cnt'))
+                \.reduce({}, function('g:WordCnt'))
                 \.value()
             Assert Equals(counts.a, 16)
             Assert Equals(counts.e, 10)

@@ -15,21 +15,21 @@ Describe collections
 
     After all
       delfunction g:MyCompare
-      delfunction g:test
+      delfunction g:Test
     End
 
     Context each
         It each iterators provide value and iteration count
-            function! g:test(x, i)
+            function! g:Test(x, i)
                 execute 'Assert' 'Equals(' . a:x . ', ' . (a:i + 1) . ')'
             endfunction
-            call g:_.each([1,2,3], function('g:test'))
+            call g:_.each([1,2,3], function('g:Test'))
         End
         It returns passing collection
-            function! g:test(x, i)
+            function! g:Test(x, i)
                 return a:i
             endfunction
-            let r = g:_.each([1,2,3], function('g:test'))
+            let r = g:_.each([1,2,3], function('g:Test'))
             Assert Equals(r, [1,2,3])
         End
     End
@@ -42,19 +42,19 @@ Describe collections
 
     Context map
         It doubled numbers
-            function! g:test(x)
+            function! g:Test(x)
                 return a:x * 2
             endfunction
-            let r = g:_.map([1,2,3], function('g:test'))
+            let r = g:_.map([1,2,3], function('g:Test'))
             Assert Equals(r, [2,4,6])
             let r2 = g:_.map([1,2,3], 'v:val * 2')
             Assert Equals(r2, [2,4,6])
         End
         It OO-style doubled numbers
-            function! g:test(x)
+            function! g:Test(x)
                 return a:x * 2
             endfunction
-            let r = g:Un([1,2,3]).map(function('g:test'))
+            let r = g:Un([1,2,3]).map(function('g:Test'))
             Assert Equals(r, [2,4,6])
             let r2 = g:Un([1,2,3]).map('v:val * 2')
             Assert Equals(r2, [2,4,6])
@@ -69,10 +69,10 @@ Describe collections
 
     Context reduce
         It can sum up an array
-            function! g:test(sum, num)
+            function! g:Test(sum, num)
                 return a:sum + a:num
             endfunction
-            let r = g:_.reduce([1,2,3], 0, function('g:test'))
+            let r = g:_.reduce([1,2,3], 0, function('g:Test'))
             Assert Equals(r, 6)
             let r2 = g:_.reduce([1,2,3], 0, 'v:memo + v:val')
             Assert Equals(r2, 6)
@@ -105,10 +105,10 @@ Describe collections
 
     Context reduceRight
         It can perform right folds
-            function! g:test(memo, str)
+            function! g:Test(memo, str)
                 return a:memo + a:str
             endfunction
-            let r = g:_.reduceRight(['foo','bar','baz'], '', function('g:test'))
+            let r = g:_.reduceRight(['foo','bar','baz'], '', function('g:Test'))
             Assert Equals(r, 'bazbarfoo')
             let r2 = g:_.reduceRight(['foo','bar','baz'], '', 'v:memo + v:val')
             Assert Equals(r2, 'bazbarfoo')
@@ -128,28 +128,28 @@ Describe collections
     Context find
         let array = [1,2,3,4]
         It should return first found `value`
-            function! g:test(val)
+            function! g:Test(val)
                 return a:val > 2
             endfunction
-            let r = g:_.find(array, -1, function('g:test'))
+            let r = g:_.find(array, -1, function('g:Test'))
             Assert Equals(r, 3)
             let r2 = g:_.find(array, -1, 'v:val > 2')
             Assert Equals(r2, 3)
         End
         It should return `default` if `value` is not found
-            function! g:test(val)
+            function! g:Test(val)
                 return 0
             endfunction
-            let r = g:_.find(array, -1, function('g:test'))
+            let r = g:_.find(array, -1, function('g:Test'))
             Assert Equals(r, -1)
         End
         It found the first "2" and broke the loop
             let s:cnt = 0
-            function! g:test(val)
+            function! g:Test(val)
                 let s:cnt += 1
                 return a:val * 2 == 4
             endfunction
-            let r = g:_.find(array, 2, function('g:test'))
+            let r = g:_.find(array, 2, function('g:Test'))
             Assert Equals(r, 2)
             execute 'Assert' printf('Equals(%d, 2)', s:cnt)
             unlet s:cnt
@@ -165,16 +165,16 @@ Describe collections
     Context filter
         let array = [1,2,3,4,5,6]
         It can filter even value
-            function! g:test(val)
+            function! g:Test(val)
                 return a:val % 2 == 0
             endfunction
-            let r = g:_.filter(array, function('g:test'))
+            let r = g:_.filter(array, function('g:Test'))
             Assert Equals(r, [2,4,6])
             let r2 = g:_.filter(array, 'v:val % 2 == 0')
             Assert Equals(r2, [2,4,6])
         End
         It OO-filter
-            let r = g:Un(array).filter(function('g:test'))
+            let r = g:Un(array).filter(function('g:Test'))
             Assert Equals(r, [2,4,6])
         End
     End
@@ -188,10 +188,10 @@ Describe collections
     Context reject
         let array = [1,2,3,4,5,6]
         It rejected each even number
-            function! g:test(val)
+            function! g:Test(val)
                 return a:val % 2 == 0
             endfunction
-            let r = g:_.reject(array, function('g:test'))
+            let r = g:_.reject(array, function('g:Test'))
             Assert Equals(r, [1,3,5])
             let r2 = g:_.reject(array, 'v:val % 2 == 0')
             Assert Equals(r2, [1,3,5])
@@ -201,7 +201,7 @@ Describe collections
             Assert Equals(r, [2,4,6])
         End
         It OO-reject
-            let r = g:Un(array).reject(function('g:test'))
+            let r = g:Un(array).reject(function('g:Test'))
             Assert Equals(r, [1,3,5])
         End
     End
@@ -217,10 +217,10 @@ Describe collections
             Assert !g:_.every([g:_.TRUE,g:_.TRUE,g:_.FALSE], g:_.identity)
         End
         It even numbers
-            function! g:test(val)
+            function! g:Test(val)
                 return a:val % 2 == 0
             endfunction
-            let r = g:_.every([0, 10, 28], function('g:test'))
+            let r = g:_.every([0, 10, 28], function('g:Test'))
             Assert r
             Assert g:_.every([0, 10, 28], 'v:val % 2 == 0')
         End
@@ -256,10 +256,10 @@ Describe collections
             Assert !g:_.some([0, '', 0])
         End
         It all odd numbers
-            function! g:test(val)
+            function! g:Test(val)
                 return a:val % 2 == 0
             endfunction
-            let r = g:_.some([1,11,29], function('g:test'))
+            let r = g:_.some([1,11,29], function('g:Test'))
             Assert !r
             Assert !g:_.some([1,11,29], 'v:val % 2 == 0')
         End
@@ -296,7 +296,7 @@ Describe collections
 
     Context sort
         It stooges sorted by age
-            function! g:test(a, b)
+            function! g:Test(a, b)
                 return a:a.age  - a:b.age
             endfunction
             let people = [{'name' : 'curly', 'age' : 50}, {'name' : 'moe', 'age' : 30}]
@@ -306,7 +306,7 @@ Describe collections
                 \.value()
             Assert Equals(r, ['moe', 'curly'])
             let r2 = g:_.chain(people)
-                \.sort(function('g:test'))
+                \.sort(function('g:Test'))
                 \.map('v:val.name')
                 \.value()
             Assert Equals(r2, ['moe', 'curly'])
@@ -323,19 +323,28 @@ Describe collections
           Assert Equals(g:_.sort(['c', 'B', 'a']), ['B', 'a', 'c'])
         End
         It can accept 'i' as a {func} (case is ignored)
+          if v:version < 704
+            Skip 'vim version is too low'
+          endif
           Assert Equals(g:_.sort(['c', 'B', 'a'], 'i'), ['a', 'B', 'c'])
         End
         It can accept 'n' as a {func} (sorted numerical)
+          if v:version < 704
+            Skip 'vim version is too low'
+          endif
           Assert Equals(g:_.sort([11, 2, 3], 'n'), [2, 3, 11])
         End
         It can accept funcref
+          if v:version < 704
+            Skip 'vim version is too low'
+          endif
           Assert Equals(g:_.sort([3, 1, 2], function('MyCompare')), [1, 2, 3])
         End
     End
 
     Context sort_by
         It stooges sorted by age
-            function! g:test(val)
+            function! g:Test(val)
                 return a:val.age
             endfunction
             let people = [{'name' : 'curly', 'age' : 50}, {'name' : 'moe', 'age' : 30}]
@@ -345,7 +354,7 @@ Describe collections
                 \.value()
             Assert Equals(r, ['moe', 'curly'])
             let r2 = g:_.chain(people)
-                \.sort_by(function('g:test'))
+                \.sort_by(function('g:Test'))
                 \.map('v:val.name')
                 \.value()
             Assert Equals(r2, ['moe', 'curly'])
@@ -401,10 +410,10 @@ Describe collections
             Assert !has_key(parity, 2)
         End
         It put each even number in the right group
-            function! g:test(val)
+            function! g:Test(val)
                 return v:val % 2
             endfunction
-            let parity = g:_.group_by([1,2,3,4,5,6], function('g:test'))
+            let parity = g:_.group_by([1,2,3,4,5,6], function('g:Test'))
             Assert has_key(parity, 0)
             Assert has_key(parity, 1)
             Assert Equals(parity['0'], [2,4,6])

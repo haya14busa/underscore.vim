@@ -10,19 +10,23 @@ Describe objects
         endfunction
     End
 
+    After all
+      delfunction g:Intercepter
+    End
+
     Context tap
-        function! s:intercepter(obj)
+        function! g:Intercepter(obj)
             let s:intercepted = a:obj
         endfunction
         It passes tapped object to interceptor
             let s:intercepted = 0
-            let returned = g:_.tap(1, function('s:intercepter'))
+            let returned = g:_.tap(1, function('g:Intercepter'))
             let intercepted = s:intercepted
             Assert Equals(intercepted, 1)
         End
         It returns tapped object
             let s:intercepted = 0
-            let returned = g:_.tap(1, function('s:intercepter'))
+            let returned = g:_.tap(1, function('g:Intercepter'))
             let intercepted = s:intercepted
             Assert Equals(returned, 1)
         End
@@ -34,7 +38,7 @@ Describe objects
             let returned = g:_.chain([1,2,3])
                 \.map('v:val * 2')
                 \.foldl([0], '[v:memo[0] + v:val]')
-                \.tap(function('s:intercepter'))
+                \.tap(function('g:Intercepter'))
                 \.map('v:val / 2')
                 \.foldl(0, 'v:memo + v:val')
                 \.value()
