@@ -395,6 +395,11 @@ function! s:_._obj.value() abort
     return self._val
 endfunction
 
+function! s:_._obj.chain() abort
+    let self._chain = s:_.TRUE
+    return self
+endfunction
+
 function! s:_._obj.pop() abort
     let x = call(s:List.pop, [self._val])
     return self._chain ? self : x
