@@ -30,10 +30,10 @@ CONTENTS				*underscore-contents*
 
 	Introduction			|underscore-introduction|
 	Install				|underscore-install|
-	Collections			|underscore-collections|
-	Functions			|underscore-functions|
-	Objects				|underscore-objects|
-	Utility				|underscore-utility|
+	Collections			|underscore-Collections|
+	Functions			|underscore-Functions|
+	Objects				|underscore-Objects|
+	Utility				|underscore-Utility|
 	Chaining			|underscore-chaining|
 	ChangeLog			|underscore-changelog|
 
@@ -84,7 +84,7 @@ USAGE							*underscore-usage*
 	let s:_ = s:V.import('Underscore').import()
 <
 ==============================================================================
-COLLECTIONS						*underscore-collections*
+COLLECTIONS						*underscore-Collections*
 
 _.each({list}, {func})			*underscore-each* *underscore-for_each*
 					*_.each()* *_.for_each()*
@@ -263,7 +263,7 @@ _.last({list} [, {n}])			*underscore-last* *_.last()*
 	" => [3, 2, 1]
 
 _.rest({list} [, {index}])	*underscore-rest* *underscore-tail*
-				*underscore-drop* *_.take()* *_.tail()* *_.drop()*
+				*underscore-drop* *_.rest()* *_.tail()* *_.drop()*
 	Returns the rest of the elements in a {list}. Pass an {index} to return
 	the values of the {list} from that {index} onward.
 >
@@ -345,7 +345,7 @@ _.unshift({list}, {value})		*underscore-unshift* *_.unshift()*
 	" => ['a', 'b', 'c']
 
 ==============================================================================
-FUNCTIONS						*underscore-functions*
+FUNCTIONS						*underscore-Functions*
 
 _.memoize({func} [, {hashfunc}])		*underscore-memoize* *_.memoize()*
 	Memoizes a given function by caching the computed result. If passed
@@ -362,7 +362,7 @@ _.memoize({func} [, {hashfunc}])		*underscore-memoize* *_.memoize()*
 	echo s:i | " => 31
 
 ==============================================================================
-OBJECTS							*underscore-objects*
+OBJECTS							*underscore-Objects*
 
 _.tap({object}, {interceptor})	  		*underscore-tap* *_.tap()*
 	Invokes interceptor |Funcref| with the object, and then returns
@@ -408,7 +408,7 @@ _.functions({object})		*underscore-functions* *underscore-methods*
 	" => ['_', 'all', 'any', 'chain', ...]
 
 ==============================================================================
-UTILITY							*underscore-utility*
+UTILITY							*underscore-Utility*
 
 _.TRUE					*underscore-TRUE* *_.TRUE*
 	This is 1 to represent true as boolean like syntax.
