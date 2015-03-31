@@ -283,10 +283,6 @@ function! s:_.unshift(...) abort
     return call(s:List.unshift, a:000)
 endfunction
 
-function! s:_.concat(xs, ys) abort
-    return a:xs + a:ys
-endfunction
-
 " Functions:
 
 " TODO: test
@@ -325,7 +321,7 @@ function! s:_.memoize(F, ...) abort
     return s:_function('s:_memoize_' . id)
 endfunction
 
-" Object:
+" Objects:
 
 function! s:_.tap(obj, interceptor) abort
     call a:interceptor(a:obj)
