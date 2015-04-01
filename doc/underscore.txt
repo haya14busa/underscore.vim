@@ -43,8 +43,8 @@ INTRODUCTION					*underscore-introduction*
 	*underscore.vim* is a Vim script library that provides a whole mess of
 	useful functional programming helpers.
 
-	It's api and documentation are heavily inspired by Underscore.js[1],
-	lodash[2] and Underscore.lua[3]. It's implementation are heavily
+	Its api and documentation are heavily inspired by Underscore.js[1],
+	lodash[2] and Underscore.lua[3]. Its implementation is heavily
 	inspired by and taken from |vital.vim|[4].
 
 	  [1]: http://underscorejs.org/
@@ -229,7 +229,7 @@ _.group_by({list}, {func})		*underscore-group_by* *_.group_by()*
 
 _.length({list})			*underscore-length* *underscore-size*
 					*_.length()* *_.size()*
-	Return the number of values in the {list}. alias: size
+	Returns the number of values in the {list}. alias: size
 >
 	echo s:_.size({'one': 1, 'two': 2, 'three': 3})
 	" => 3
@@ -303,7 +303,7 @@ _.uniq_by({list}, {func})	*underscore-uniq_by* *underscore-unique_by*
 	" => [4, 3]
 
 _.zip({list}, ...)			*underscore-zip* *_.zip()*
-	Zip given {list}s like python's one.
+	Zips given {list}s like python's one.
 >
 	echo s:_.zip(['a', 'b', 'c'], [1, 2, 3])
 	" => [['a', 1], ['b', 2], ['c', 3]]
@@ -507,7 +507,7 @@ _(obj).value()				*underscore-value* *_(obj).value()*
 	Extracts the value of a wrapped underscore object.
 
 _._({value})				*underscore-_* *_._()*
-	Creates an wrapped underscore object which wraps value to enable
+	Creates a wrapped underscore object which wraps value to enable
 	implicit chaining.
 >
 	echo s:_._(range(1, 10)).reduce(0, 'v:memo + v:val')
